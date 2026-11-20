@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEDITRONIK - SIM-Elektromedis & Sistem Kalibrasi Rumah Sakit</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        medical: {
+                            50: '#f0f7ff', 100: '#e0effe', 200: '#b9ddfd', 300: '#7cc2fb',
+                            400: '#36a2f7', 500: '#0c85eb', 600: '#0067c9', 700: '#0152a3',
+                            800: '#064687', 900: '#0a3c70', 950: '#07264a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .mesh-bg {
+            background-color: #061933;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(14, 116, 144, 0.4) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(37, 99, 235, 0.45) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(2, 132, 199, 0.3) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(30, 58, 138, 0.5) 0px, transparent 50%);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 antialiased flex flex-col font-sans">
+
+    <!-- ==================== VIEW 1: AUTH SCREEN (LOGIN & REGISTER) ==================== -->
+    <div id="authScreen" class="mesh-bg min-h-screen flex items-center justify-center p-4 sm:p-6 relative">
+        <!-- Decor Grid -->
+        <div class="absolute inset-0 opacity-15 pointer-events-none" style="background-size: 32px 32px; background-image: linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 1px, transparent 1px);"></div>
+
+        <div class="w-full max-w-4xl relative z-10 my-6">
+            <!-- Header Brand -->
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-white backdrop-blur-md shadow-lg mb-3">
+                    <span class="flex h-2.5 w-2.5 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-400"></span>
+                    </span>
+                    <span class="text-xs font-semibold tracking-wider uppercase text-cyan-200">Sistem Informasi Elektromedis & Kalibrasi RS</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-heart-pulse text-cyan-400"></i>
+                    <span>MEDITRONIK</span>
+                    <span class="text-xs bg-cyan-500/30 text-cyan-200 border border-cyan-400/30 font-semibold px-2 py-0.5 rounded-md uppercase">PRO</span>
+                </h1>
+                <p class="text-blue-200 text-xs sm:text-sm mt-1 max-w-md mx-auto">Pengawasan Kelaikan, Jadwal Kalibrasi & Inventarisasi Alat Kesehatan (Permenkes RI No. 54 / 2015)</p>
+            </div>
+
+            <!-- Card Container -->
+            <div class="bg-white/95 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl border border-white/30">
+                <div class="grid grid-cols-1 lg:grid-cols-12">
+                    
+                    <!-- Left Sidebar Info -->
+                    <div class="lg:col-span-5 bg-gradient-to-br from-medical-950 via-medical-900 to-medical-800 p-8 text-white flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-2 mb-4 text-cyan-400">
+                                <i class="fa-solid fa-shield-halved text-2xl"></i>
+                                <span class="font-bold text-xs uppercase tracking-wider text-cyan-300">IPSRS Rumah Sakit</span>
+                            </div>
+                            <h2 class="text-2xl font-bold leading-snug mb-3">Kepatuhan Standar Keselamatan Pasien</h2>
+                            <p class="text-blue-200/80 text-xs sm:text-sm leading-relaxed mb-6">
+                                Kelola masa berlaku sertifikat pengujian & kalibrasi seluruh instrumen medis ICU, IGD, OK Bedah, dan Radiologi secara presisi.
+                            </p>
+                            <div class="space-y-3 mb-6">
+                                <div class="flex items-center gap-3 text-xs bg-white/5 p-2.5 rounded-xl border border-white/10">
+                                    <i class="fa-solid fa-calendar-check text-cyan-400 text-base"></i>
+                                    <span>Notifikasi Jatuh Tempo Kalibrasi</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-xs bg-white/5 p-2.5 rounded-xl border border-white/10">
+                                    <i class="fa-solid fa-print text-cyan-400 text-base"></i>
+                                    <span>Cetak Label Stiker Laik Pakai BPFK</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-xs bg-white/5 p-2.5 rounded-xl border border-white/10">
+                                    <i class="fa-solid fa-bolt text-amber-400 text-base"></i>
+                                    <span>Standar Keselamatan Listrik IEC 62353</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Demo Accounts Fill -->
+                        <div class="pt-4 border-t border-white/15">
+                            <p class="text-[11px] font-semibold text-cyan-300 uppercase tracking-wider mb-2">
+                                <i class="fa-solid fa-key text-amber-300 mr-1"></i> Klik untuk Masuk Cepat (Demo):
+                            </p>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <button type="button" onclick="quickLogin('admin')" class="px-2.5 py-2 rounded-lg bg-white/10 hover:bg-cyan-500 hover:text-white transition-all text-left border border-white/15 flex items-center justify-between">
+                                    <span><strong>Admin</strong> IPSRS</span>
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </button>
+                                <button type="button" onclick="quickLogin('teknisi')" class="px-2.5 py-2 rounded-lg bg-white/10 hover:bg-cyan-500 hover:text-white transition-all text-left border border-white/15 flex items-center justify-between">
+                                    <span><strong>Teknisi</strong> Medis</span>
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Form Container -->
+                    <div class="lg:col-span-7 p-7 sm:p-9 bg-white">
+                        <!-- Navigation Tabs -->
+                        <div class="flex border-b border-slate-200 mb-6">
+                            <button id="authTabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 pb-3 text-sm font-semibold text-center border-b-2 border-medical-600 text-medical-700 transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-right-to-bracket"></i>
+                                <span>Masuk ke Akun</span>
+                            </button>
+                            <button id="authTabRegBtn" onclick="switchAuthTab('register')" class="flex-1 pb-3 text-sm font-semibold text-center border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span>Registrasi Akun</span>
+                            </button>
+                        </div>
+
+                        <!-- Login Form -->
+                        <div id="authLoginForm" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Username / Email</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                        <i class="fa-regular fa-user"></i>
+                                    </span>
+                                    <input type="text" id="loginUsernameInput" value="admin" class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-medical-500 bg-slate-50/50">
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">Kata Sandi</label>
+                                    <span class="text-[11px] text-medical-600 font-medium cursor-pointer hover:underline" onclick="quickLogin('admin')">Demo: admin123</span>
+                                </div>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                        <i class="fa-solid fa-lock"></i>
+                                    </span>
+                                    <input type="password" id="loginPasswordInput" value="admin123" class="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-medical-500 bg-slate-50/50">
+                                    <button type="button" onclick="togglePassword('loginPasswordInput', this)" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="button" onclick="handleLogin()" class="w-full py-3 px-4 bg-gradient-to-r from-medical-600 to-medical-700 hover:from-medical-700 hover:to-medical-800 text-white font-semibold rounded-xl shadow-lg shadow-medical-600/30 transition-all flex items-center justify-center gap-2 text-sm">
+                                <span>Masuk ke Dashboard</span>
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </button>
+                        </div>
+
+                        <!-- Register Form -->
+                        <div id="authRegisterForm" class="space-y-3.5 hidden">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Nama Lengkap & Gelar</label>
+                                <input type="text" id="regNama" placeholder="Contoh: Danu Wiranto, S.Tr.TEM" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 bg-slate-50/50">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Username</label>
+                                    <input type="text" id="regUser" placeholder="Username" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 bg-slate-50/50">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Peran / Jabatan</label>
+                                    <select id="regRole" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 bg-slate-50/50">
+                                        <option value="Teknisi Elektromedis">Teknisi Elektromedis</option>
+                                        <option value="Admin IPSRS / Elektromedis">Admin IPSRS</option>
+                                        <option value="Kepala Ruangan">Kepala Ruangan</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Email Rumah Sakit</label>
+                                <input type="email" id="regEmail" placeholder="nama@rumahsakit.co.id" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 bg-slate-50/50">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Kata Sandi</label>
+                                    <input type="password" id="regPass" placeholder="Min. 6 digit" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 bg-slate-50/50">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Ulangi Sandi</label>
+                                    <input type="password" id="regPass2" placeholder="Konfirmasi" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 bg-slate-50/50">
+                                </div>
+                            </div>
+                            <button type="button" onclick="handleRegister()" class="w-full py-2.5 px-4 bg-gradient-to-r from-cyan-600 to-medical-600 hover:from-cyan-700 hover:to-medical-700 text-white font-semibold rounded-xl shadow-lg shadow-cyan-600/30 transition-all flex items-center justify-center gap-2 text-sm mt-2">
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span>Daftarkan Akun Baru</span>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center mt-6 text-xs text-blue-200/60">
+                Instalasi Pemeliharaan Sarana Rumah Sakit (IPSRS) &copy; 2026
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== VIEW 2: MAIN DASHBOARD & SYSTEM ==================== -->
+    <div id="mainDashboard" class="hidden flex-1 flex-col">
+        
+        <!-- TOP NAVBAR -->
+        <nav class="bg-gradient-to-r from-medical-950 via-medical-900 to-medical-800 text-white sticky top-0 z-40 shadow-xl border-b border-blue-900/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16 sm:h-20">
+                    
+                    <!-- Brand -->
+                    <div class="flex items-center gap-3 sm:gap-4">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-medical-500 flex items-center justify-center text-white shadow-lg shadow-cyan-500/30 ring-2 ring-white/20">
+                            <i class="fa-solid fa-heart-pulse text-lg sm:text-2xl animate-pulse"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-base sm:text-xl font-extrabold tracking-tight text-white">MEDITRONIK</span>
+                                <span class="text-[10px] sm:text-xs font-bold uppercase px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-300 border border-cyan-400/30">IPSRS RS</span>
+                            </div>
+                            <p class="text-[10px] sm:text-xs text-blue-200/80 hidden sm:block">Sistem Pengawasan Kelaikan & Jadwal Kalibrasi Alat Elektromedis</p>
+                        </div>
+                    </div>
+
+                    <!-- Right Controls -->
+                    <div class="flex items-center gap-2 sm:gap-4">
+                        <div class="hidden lg:flex items-center gap-1.5 mr-2">
+                            <button onclick="scrollToInventory()" class="px-3 py-1.5 rounded-xl bg-white/20 text-white text-xs font-semibold shadow-inner">
+                                <i class="fa-solid fa-laptop-medical mr-1.5 text-cyan-300"></i> Inventaris
+                            </button>
+                            <button onclick="openModalLogs()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-blue-100 hover:text-white text-xs font-semibold transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-clock-rotate-left text-cyan-300"></i>
+                                <span>Log Aktivitas</span>
+                                <span id="appLogCountBadge" class="px-1.5 py-0.2 rounded-full bg-cyan-400/30 text-cyan-200 text-[10px]">0</span>
+                            </button>
+                            <button onclick="openModalUsers()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-blue-100 hover:text-white text-xs font-semibold transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-users text-cyan-300"></i>
+                                <span>Data Pengguna</span>
+                                <span id="appUserCountBadge" class="px-1.5 py-0.2 rounded-full bg-emerald-400/30 text-emerald-200 text-[10px]">0</span>
+                            </button>
+                        </div>
+
+                        <button onclick="openModalAdd()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-medical-500 hover:from-cyan-600 hover:to-medical-600 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-cyan-500/25 transition-all">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Tambah Alat</span>
+                        </button>
+
+                        <div class="flex items-center gap-3 pl-2 sm:pl-3 border-l border-white/10">
+                            <div class="text-right hidden sm:block">
+                                <div id="navUserNama" class="text-xs sm:text-sm font-bold text-white">Raden Pratama, S.Tr.TEM</div>
+                                <div id="navUserRole" class="text-[10px] sm:text-[11px] text-cyan-300 font-medium">Admin IPSRS / Elektromedis</div>
+                            </div>
+                            <div id="navUserAvatar" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-medical-700 border-2 border-cyan-400/40 flex items-center justify-center text-white text-sm font-bold uppercase shadow-inner">
+                                RP
+                            </div>
+                            <button onclick="handleLogout()" class="p-2 text-blue-200 hover:text-red-400 hover:bg-white/10 rounded-xl transition-all" title="Keluar / Logout">
+                                <i class="fa-solid fa-right-from-bracket text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+
+        <!-- MAIN BODY -->
+        <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+
+            <!-- Banner Welcome -->
+            <div class="bg-gradient-to-r from-medical-900 via-medical-800 to-indigo-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-blue-800/40">
+                <div class="absolute -right-16 -top-16 w-64 h-64 bg-cyan-400/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-cyan-300 text-xs font-semibold backdrop-blur-md mb-2">
+                            <i class="fa-solid fa-circle-dot text-[9px] text-emerald-400 animate-ping"></i>
+                            <span>Sistem Kalibrasi Standar Permenkes RI No. 54 / 2015</span>
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Dashboard Pemeliharaan & Kalibrasi Alat Medis</h2>
+                        <p class="text-blue-100/80 text-xs sm:text-sm mt-1 max-w-2xl leading-relaxed">
+                            Pantau masa kelaikan berkala, nomor sertifikat BPFK, status kelaikan operasional, dan parameter keselamatan listrik instrumen medis seluruh unit rumah sakit.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <button onclick="printSummaryReport()" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold border border-white/20 backdrop-blur-md transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-print text-cyan-300"></i>
+                            <span>Cetak Rekap Laporan</span>
+                        </button>
+                        <button onclick="exportCSV()" class="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-cyan-500/30 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-file-excel"></i>
+                            <span>Ekspor Excel / CSV</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- METRIC CARDS -->
+            <div class="grid grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
+                <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md transition-all">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Alat</span>
+                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-medical-600 flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-laptop-medical"></i>
+                        </div>
+                    </div>
+                    <div id="statTotal" class="text-2xl sm:text-3xl font-extrabold text-slate-900">0</div>
+                    <div class="text-[11px] text-slate-400 mt-1">Terdata di inventaris</div>
+                </div>
+
+                <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-emerald-100 hover:shadow-md transition-all">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Laik Pakai</span>
+                        <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-shield-check"></i>
+                        </div>
+                    </div>
+                    <div id="statLaik" class="text-2xl sm:text-3xl font-extrabold text-emerald-600">0</div>
+                    <div class="text-[11px] text-emerald-600/80 mt-1">Sertifikat kalibrasi aktif</div>
+                </div>
+
+                <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-amber-100 hover:shadow-md transition-all">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-amber-700">Segera Kalibrasi</span>
+                        <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                    </div>
+                    <div id="statMendekati" class="text-2xl sm:text-3xl font-extrabold text-amber-600">0</div>
+                    <div class="text-[11px] text-amber-700/80 mt-1">Jatuh tempo &le; 30 hari</div>
+                </div>
+
+                <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-red-100 hover:shadow-md transition-all">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-red-700">Kadaluarsa</span>
+                        <div class="w-9 h-9 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                    </div>
+                    <div id="statKadaluarsa" class="text-2xl sm:text-3xl font-extrabold text-red-600">0</div>
+                    <div class="text-[11px] text-red-600/80 mt-1">Wajib kalibrasi ulang</div>
+                </div>
+
+                <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-indigo-100 hover:shadow-md transition-all col-span-2 lg:col-span-1">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-indigo-700">Maintenance</span>
+                        <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                        </div>
+                    </div>
+                    <div id="statRusak" class="text-2xl sm:text-3xl font-extrabold text-indigo-600">0</div>
+                    <div class="text-[11px] text-indigo-600/80 mt-1">Kondisi perbaikan</div>
+                </div>
+            </div>
+
+            <!-- CHARTS SECTION -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-900">Distribusi Kategori Alat Elektromedis</h3>
+                            <p class="text-xs text-slate-500">Berdasarkan fungsi dan klasifikasi klinis</p>
+                        </div>
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-blue-50 text-medical-700">Analisis Kategori</span>
+                    </div>
+                    <div class="h-64 sm:h-72">
+                        <canvas id="appCategoryChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-900">Status Kelaikan Kalibrasi</h3>
+                                <p class="text-xs text-slate-500">Kepatuhan akreditasi RS</p>
+                            </div>
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700">Permenkes 54</span>
+                        </div>
+                        <div class="h-52 flex items-center justify-center">
+                            <canvas id="appStatusChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-100 space-y-2 text-xs">
+                        <div class="flex items-center justify-between">
+                            <span class="flex items-center gap-2 text-slate-600"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> Laik Pakai</span>
+                            <strong id="legendLaik" class="text-slate-800">0 unit</strong>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="flex items-center gap-2 text-slate-600"><span class="w-3 h-3 rounded-full bg-amber-500"></span> Mendekati Jatuh Tempo</span>
+                            <strong id="legendMendekati" class="text-slate-800">0 unit</strong>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="flex items-center gap-2 text-slate-600"><span class="w-3 h-3 rounded-full bg-red-500"></span> Kadaluarsa (Expired)</span>
+                            <strong id="legendKadaluarsa" class="text-slate-800">0 unit</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIVE AUDIT & ACTIVITY FEED WIDGET -->
+            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-bolt text-cyan-600 animate-pulse"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-extrabold text-slate-900">Aktivitas Terkini (Siapa Masuk, Registrasi & Perubahan Data)</h3>
+                            <p class="text-xs text-slate-500">Pemantauan langsung secara real-time setiap kali ada pengguna yang beraktivitas</p>
+                        </div>
+                    </div>
+                    <button onclick="openModalLogs()" class="text-xs font-bold text-medical-700 hover:text-medical-800 flex items-center gap-1 group">
+                        <span>Lihat Semua Log Audit</span>
+                        <i class="fa-solid fa-arrow-right text-[10px] transition-transform group-hover:translate-x-1"></i>
+                    </button>
+                </div>
+
+                <div id="liveFeedContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <!-- Injected via JavaScript -->
+                </div>
+            </div>
+
+            <!-- TABLE INVENTORY -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5 sm:p-6 border-b border-slate-200/80 bg-slate-50/50">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-medical-600"></i>
+                                <span>Daftar Inventaris Alat Elektromedis</span>
+                            </h3>
+                            <p class="text-xs text-slate-500">Data terperinci mencakup nomor seri, jadwal kalibrasi, dan sertifikat</p>
+                        </div>
+                        <button onclick="openModalAdd()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-medical-700 hover:bg-medical-800 text-white text-xs sm:text-sm font-semibold shadow-md transition-all">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Tambah Alat Baru</span>
+                        </button>
+                    </div>
+
+                    <!-- Filter Bar -->
+                    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                            </span>
+                            <input type="text" id="filterSearch" oninput="renderTable()" placeholder="Cari nama, merek, SN..." class="w-full pl-9 pr-4 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 bg-white">
+                        </div>
+                        <div>
+                            <select id="filterLokasi" onchange="renderTable()" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 bg-white">
+                                <option value="">Semua Lokasi Ruangan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="filterJenis" onchange="renderTable()" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 bg-white">
+                                <option value="">Semua Kategori Alat</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select id="filterStatus" onchange="renderTable()" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 bg-white">
+                                <option value="">Semua Status Kalibrasi</option>
+                                <option value="laik">Terkalibrasi (Laik)</option>
+                                <option value="mendekati">Mendekati Jatuh Tempo</option>
+                                <option value="expired">Kadaluarsa (Expired)</option>
+                            </select>
+                            <button onclick="resetFilters()" class="p-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-semibold" title="Reset Filter">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Content -->
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs divide-y divide-slate-200">
+                        <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider font-bold text-[11px]">
+                            <tr>
+                                <th class="py-3.5 px-4 text-center w-12">No</th>
+                                <th class="py-3.5 px-4">Nama & Model Alat</th>
+                                <th class="py-3.5 px-4">Kategori & Risiko</th>
+                                <th class="py-3.5 px-4">Lokasi Ruangan</th>
+                                <th class="py-3.5 px-4">Tahun & Kondisi</th>
+                                <th class="py-3.5 px-4">Jadwal Kalibrasi</th>
+                                <th class="py-3.5 px-4 text-center">Status Kelaikan</th>
+                                <th class="py-3.5 px-4 text-center w-36">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody" class="divide-y divide-slate-100 bg-white">
+                            <!-- Injected via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="p-4 bg-slate-50 border-t border-slate-200 text-xs text-slate-500 flex items-center justify-between">
+                    <div>
+                        Menampilkan <strong id="countShown">0</strong> dari <strong id="countTotal">0</strong> alat kesehatan terdaftar
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Laik</span>
+                        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Waspada</span>
+                        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span> Expired</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-12">
+            <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2 text-medical-800 font-bold">
+                    <i class="fa-solid fa-shield-heart text-base text-medical-600"></i>
+                    <span>MEDITRONIK - Sistem Informasi Elektromedis RS</span>
+                </div>
+                <div>Standar Pemeliharaan & Kalibrasi Sesuai Permenkes RI No. 54 Tahun 2015</div>
+                <div>&copy; 2026 Instalasi IPSRS Medis</div>
+            </div>
+        </footer>
+
+    </div>
+
+
+    <!-- ==================== MODAL TAMBAH & EDIT ALAT ==================== -->
+    <div id="modalFormAlat" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden my-8">
+            <div class="p-6 bg-gradient-to-r from-medical-900 to-medical-800 text-white flex items-center justify-between">
+                <div>
+                    <h3 id="modalFormTitle" class="text-lg font-bold">Tambah Data Alat Elektromedis</h3>
+                    <p class="text-xs text-blue-200">Lengkapi spesifikasi teknis dan sertifikasi pengujian kalibrasi</p>
+                </div>
+                <button onclick="closeModalForm()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="formAlat" onsubmit="handleSaveAlat(event)" class="p-6 sm:p-8 space-y-6">
+                <input type="hidden" id="formAlatId" value="">
+
+                <!-- Fieldset 1 -->
+                <div>
+                    <h4 class="text-xs font-bold text-medical-800 uppercase tracking-wider mb-3 pb-1 border-b border-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-medical-600"></i>
+                        <span>1. Identitas & Spesifikasi Alat</span>
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Alat Elektromedis *</label>
+                            <input type="text" id="inputNamaAlat" required placeholder="Contoh: Defibrillator Biphasic" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori / Klasifikasi *</label>
+                            <select id="inputJenisAlat" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500">
+                                <option value="Life Support (Penyokong Hidup)">Life Support (Penyokong Hidup)</option>
+                                <option value="Monitoring Pasien">Monitoring Pasien</option>
+                                <option value="Diagnostik & Pencitraan">Diagnostik & Pencitraan</option>
+                                <option value="Terapi & Bedah">Terapi & Bedah</option>
+                                <option value="Terapi & Pengobatan">Terapi & Pengobatan</option>
+                                <option value="Laboratorium Klinis">Laboratorium Klinis</option>
+                                <option value="Sterilisasi & CSSD">Sterilisasi & CSSD</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Merek Pabrikan *</label>
+                            <input type="text" id="inputMerek" required placeholder="Mindray, Dräger, GE, Philips" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Tipe / Model</label>
+                            <input type="text" id="inputTipe" placeholder="Contoh: BeneHeart D3" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nomor Seri (Serial Number / SN)</label>
+                            <input type="text" id="inputSN" placeholder="SN-2023-DF-8821" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Kode ASPAK / Inventaris</label>
+                            <input type="text" id="inputKode" placeholder="Auto / EM-ICU-001" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 bg-slate-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Tahun Pengadaan</label>
+                            <input type="text" id="inputTahun" value="2024" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Daya Kelistrikan</label>
+                            <input type="text" id="inputDaya" placeholder="250 Watt / 220 VAC" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fieldset 2 -->
+                <div>
+                    <h4 class="text-xs font-bold text-medical-800 uppercase tracking-wider mb-3 pb-1 border-b border-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-hospital-user text-medical-600"></i>
+                        <span>2. Lokasi & Tingkat Risiko</span>
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Ruangan / Unit RS *</label>
+                            <select id="inputLokasi" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500">
+                                <option value="ICU (Intensive Care Unit)">ICU (Intensive Care Unit)</option>
+                                <option value="IGD (Instalasi Gawat Darurat)">IGD (Instalasi Gawat Darurat)</option>
+                                <option value="Kamar Bedah Sentral (OK 1)">Kamar Bedah Sentral (OK 1)</option>
+                                <option value="Kamar Bedah Sentral (OK 2)">Kamar Bedah Sentral (OK 2)</option>
+                                <option value="NICU / PICU">NICU / PICU</option>
+                                <option value="Ruang Rawat Inap Melati">Ruang Rawat Inap Melati</option>
+                                <option value="Poliklinik Jantung & Pembuluh Darah">Poliklinik Jantung</option>
+                                <option value="Instalasi Radiologi">Instalasi Radiologi</option>
+                                <option value="Laboratorium Patologi Klinik">Laboratorium Patologi</option>
+                                <option value="Unit Hemodialisa (Cuci Darah)">Unit Hemodialisa</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Kondisi Alat</label>
+                            <select id="inputKondisi" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500">
+                                <option value="Baik (Laik Operasi)">Baik (Laik Operasi)</option>
+                                <option value="Rusak Ringan (Perlu Maintenance)">Rusak Ringan (Maintenance)</option>
+                                <option value="Rusak Berat (Afkir)">Rusak Berat (Afkir)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Tingkat Risiko (ECRI)</label>
+                            <select id="inputRisiko" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500">
+                                <option value="Tinggi (High Risk / Life Support)">Tinggi (Life Support)</option>
+                                <option value="Sedang (Medium Risk)" selected>Sedang (Medium Risk)</option>
+                                <option value="Rendah (Low Risk)">Rendah (Low Risk)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fieldset 3 -->
+                <div>
+                    <h4 class="text-xs font-bold text-medical-800 uppercase tracking-wider mb-3 pb-1 border-b border-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-certificate text-medical-600"></i>
+                        <span>3. Sertifikasi Kalibrasi Kemenkes RI</span>
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Kalibrasi Terakhir</label>
+                            <input type="date" id="inputTglTerakhir" onchange="calcNextDueDate()" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Jatuh Tempo Kalibrasi (+1 Tahun)</label>
+                            <input type="date" id="inputTglBerikutnya" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 bg-blue-50/50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Lembaga / Balai Kalibrasi</label>
+                            <input type="text" id="inputLembaga" value="Balai Pengamanan Fasilitas Kesehatan (BPFK)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nomor Sertifikat Kalibrasi</label>
+                            <input type="text" id="inputNoSertif" placeholder="CAL/BPFK-SBY/IV/2026-112" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Pemeliharaan / Kelengkapan Aksesori</label>
+                            <textarea id="inputKeterangan" rows="2" placeholder="Catatan teknis elektromedis..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+                    <button type="button" onclick="closeModalForm()" class="px-5 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
+                    <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-medical-600 to-medical-700 hover:from-medical-700 hover:to-medical-800 text-white text-xs font-semibold rounded-xl shadow-md flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Simpan Data</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ==================== MODAL DETAIL ALAT ==================== -->
+    <div id="modalDetailAlat" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden my-8">
+            <div class="p-6 bg-gradient-to-r from-medical-900 to-medical-800 text-white flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-cyan-300">KARTU RIWAYAT ALAT ELEKTROMEDIS</span>
+                    <h3 id="detailNamaAlat" class="text-xl font-bold">Nama Alat</h3>
+                    <p id="detailKodeAlat" class="text-xs text-blue-200">Kode Inventaris</p>
+                </div>
+                <button onclick="closeModalDetail()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs">
+                    <div>
+                        <span class="text-slate-400 font-semibold block uppercase text-[10px]">Merek / Model:</span>
+                        <strong id="detailMerekModel" class="text-slate-800 text-sm">-</strong>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-semibold block uppercase text-[10px]">Nomor Seri (SN):</span>
+                        <strong id="detailSN" class="text-medical-700 font-mono text-sm">-</strong>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-semibold block uppercase text-[10px]">Lokasi Ruangan:</span>
+                        <strong id="detailLokasi" class="text-slate-800 text-sm">-</strong>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-semibold block uppercase text-[10px]">Tahun / Daya:</span>
+                        <strong id="detailTahunDaya" class="text-slate-800 text-sm">-</strong>
+                    </div>
+                </div>
+
+                <div class="border border-slate-200 rounded-2xl p-4 bg-white space-y-2 text-xs">
+                    <h4 class="font-bold text-medical-800 uppercase text-[11px] pb-1 border-b border-slate-100 flex items-center gap-1.5">
+                        <i class="fa-solid fa-certificate text-medical-600"></i>
+                        <span>Sertifikasi Kalibrasi Kemenkes RI</span>
+                    </h4>
+                    <div class="flex justify-between py-1">
+                        <span class="text-slate-500">Tanggal Kalibrasi Terakhir:</span>
+                        <strong id="detailTglTerakhir" class="text-slate-800">-</strong>
+                    </div>
+                    <div class="flex justify-between py-1">
+                        <span class="text-slate-500">Jatuh Tempo Kalibrasi:</span>
+                        <strong id="detailTglBerikutnya" class="text-medical-700">-</strong>
+                    </div>
+                    <div class="flex justify-between py-1">
+                        <span class="text-slate-500">Status Kelaikan:</span>
+                        <span id="detailStatusBadge" class="px-2 py-0.5 rounded text-[10px] font-bold">-</span>
+                    </div>
+                    <div class="flex justify-between py-1">
+                        <span class="text-slate-500">Lembaga Penguji:</span>
+                        <strong id="detailLembaga" class="text-slate-800">-</strong>
+                    </div>
+                    <div class="flex justify-between py-1">
+                        <span class="text-slate-500">Nomor Sertifikat:</span>
+                        <strong id="detailNoSertif" class="font-mono text-slate-800">-</strong>
+                    </div>
+                </div>
+
+                <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50/50 text-xs">
+                    <span class="font-bold text-slate-700 block mb-1">Catatan Pemeliharaan:</span>
+                    <p id="detailKeterangan" class="text-slate-600 leading-relaxed">-</p>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button onclick="closeModalDetail()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Tutup</button>
+                    <button id="detailPrintStickerBtn" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-tag"></i>
+                        <span>Cetak Stiker Kalibrasi</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== MODAL CETAK STIKER ==================== -->
+    <div id="modalSticker" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden">
+            <div class="p-4 bg-slate-100 border-b border-slate-200 flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-700">Pratinjau Stiker Laik Pakai Kemenkes RI</span>
+                <button onclick="closeModalSticker()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 flex flex-col items-center">
+                <!-- Physical Sticker Box -->
+                <div id="stickerPrintArea" class="w-full bg-white rounded-2xl border-2 border-emerald-600 overflow-hidden shadow-lg text-slate-800">
+                    <div class="bg-emerald-600 text-white px-4 py-2 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-shield-heart text-xl"></i>
+                            <div>
+                                <h4 class="text-[11px] font-black uppercase tracking-wider">INSTALASI ELEKTROMEDIS RS</h4>
+                                <p class="text-[9px] text-emerald-100">Permenkes RI No. 54 / 2015</p>
+                            </div>
+                        </div>
+                        <span class="bg-white text-emerald-800 font-black text-[10px] px-2 py-0.5 rounded">LAIK PAKAI</span>
+                    </div>
+
+                    <div class="p-4 space-y-2.5 text-xs">
+                        <div class="flex justify-between items-start border-b pb-2">
+                            <div>
+                                <span class="text-[9px] text-slate-400 uppercase font-bold block">NAMA ALAT KESEHATAN:</span>
+                                <h5 id="stkNama" class="font-extrabold text-slate-900 text-sm leading-tight">Nama Alat</h5>
+                                <p id="stkMerek" class="text-slate-600 text-[11px]">Merek Model</p>
+                            </div>
+                            <div class="w-12 h-12 border border-slate-300 rounded p-1 flex items-center justify-center bg-slate-50 text-slate-800">
+                                <i class="fa-solid fa-qrcode text-2xl"></i>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 text-[11px]">
+                            <div>
+                                <span class="text-[9px] text-slate-400 uppercase font-bold block">KODE ALAT:</span>
+                                <span id="stkKode" class="font-bold font-mono text-slate-800">-</span>
+                            </div>
+                            <div>
+                                <span class="text-[9px] text-slate-400 uppercase font-bold block">NOMOR SERI:</span>
+                                <span id="stkSN" class="font-bold font-mono text-slate-800">-</span>
+                            </div>
+                        </div>
+
+                        <div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
+                            <div>
+                                <span class="text-[9px] uppercase font-bold text-emerald-700 block">TGL. KALIBRASI:</span>
+                                <span id="stkTglTerakhir" class="font-bold text-slate-800 text-xs">-</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[9px] uppercase font-bold text-emerald-700 block">BERLAKU S/D:</span>
+                                <span id="stkTglBerikutnya" class="font-black text-emerald-800 text-xs">-</span>
+                            </div>
+                        </div>
+
+                        <div class="pt-1 flex items-center justify-between text-[9px] text-slate-400 border-t border-slate-100">
+                            <div>Penguji: <strong id="stkLembaga">BPFK</strong></div>
+                            <div class="italic">Paraf: [ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex items-center gap-3 w-full">
+                    <button onclick="closeModalSticker()" class="flex-1 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
+                    <button onclick="window.print()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Cetak Stiker</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL LOG AKTIVITAS (AUDIT TRAIL) ==================== -->
+    <div id="modalLogs" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-4xl overflow-hidden my-8">
+            <div class="p-6 bg-gradient-to-r from-medical-900 to-medical-800 text-white flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-cyan-300">AUDIT TRAIL SISTEM ELEKTROMEDIS</span>
+                    <h3 class="text-xl font-bold">Riwayat & Log Aktivitas Pengguna</h3>
+                    <p class="text-xs text-blue-200">Catatan siapa yang masuk, mendaftar, dan merubah data alat</p>
+                </div>
+                <button onclick="closeModalLogs()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <div class="overflow-x-auto max-h-96 custom-scrollbar">
+                    <table class="w-full text-left text-xs divide-y divide-slate-200">
+                        <thead class="bg-slate-50 text-slate-500 uppercase font-bold text-[10px]">
+                            <tr>
+                                <th class="py-2.5 px-3">Waktu</th>
+                                <th class="py-2.5 px-3">Pengguna</th>
+                                <th class="py-2.5 px-3 text-center">Tindakan</th>
+                                <th class="py-2.5 px-3">Rincian Aktivitas</th>
+                                <th class="py-2.5 px-3 text-center">IP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody" class="divide-y divide-slate-100 bg-white">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-end pt-2">
+                    <button onclick="closeModalLogs()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL DATA PENGGUNA TERDAFTAR ==================== -->
+    <div id="modalUsers" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden my-8">
+            <div class="p-6 bg-gradient-to-r from-medical-900 to-medical-800 text-white flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-cyan-300">MANAJEMEN AKUN SIM-RS</span>
+                    <h3 class="text-xl font-bold">Daftar Akun Pengguna Terdaftar</h3>
+                    <p class="text-xs text-blue-200">Daftar staf dan teknisi yang memiliki hak akses sistem</p>
+                </div>
+                <button onclick="closeModalUsers()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <div class="overflow-x-auto max-h-96 custom-scrollbar">
+                    <table class="w-full text-left text-xs divide-y divide-slate-200">
+                        <thead class="bg-slate-50 text-slate-500 uppercase font-bold text-[10px]">
+                            <tr>
+                                <th class="py-2.5 px-3">Nama Lengkap</th>
+                                <th class="py-2.5 px-3">Username & Email</th>
+                                <th class="py-2.5 px-3">Peran / Jabatan</th>
+                                <th class="py-2.5 px-3 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody" class="divide-y divide-slate-100 bg-white">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-end pt-2">
+                    <button onclick="closeModalUsers()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== JAVASCRIPT APPLICATION CORE ==================== -->
+    <script>
+        // Initial Realistic Seed Dataset
+        const defaultAlat = [
+            {
+                id: 1,
+                kode_alat: 'EM-ICU-001',
+                nama_alat: 'Defibrillator / DC Shock Biphasic',
+                jenis_alat: 'Life Support (Penyokong Hidup)',
+                merek: 'Mindray',
+                tipe_model: 'BeneHeart D3',
+                nomor_seri: 'SN-BH2023-8841',
+                tahun: '2023',
+                lokasi: 'ICU (Intensive Care Unit)',
+                tgl_kalibrasi_terakhir: '2025-11-20',
+                tgl_kalibrasi_berikutnya: '2026-11-20',
+                lembaga_kalibrasi: 'Balai Pengamanan Fasilitas Kesehatan (BPFK) Surabaya',
+                no_sertifikat: 'CAL/BPFK-SBY/XI/2025-091',
+                kondisi: 'Baik (Laik Operasi)',
+                daya_listrik: '250 Watt / 220 VAC',
+                tingkat_risiko: 'Tinggi (High Risk / Life Support)',
+                keterangan: 'Kondisi baterai internal 100%, paddles dewasa dan anak lengkap.'
+            },
+            {
+                id: 2,
+                kode_alat: 'EM-ICU-002',
+                nama_alat: 'Ventilator Mekanik ICU Adult & Pediatric',
+                jenis_alat: 'Life Support (Penyokong Hidup)',
+                merek: 'Dräger',
+                tipe_model: 'Savina 300 Select',
+                nomor_seri: 'SN-DR2022-4910',
+                tahun: '2022',
+                lokasi: 'ICU (Intensive Care Unit)',
+                tgl_kalibrasi_terakhir: '2025-11-05',
+                tgl_kalibrasi_berikutnya: '2026-11-25',
+                lembaga_kalibrasi: 'BPFK Jakarta',
+                no_sertifikat: 'CAL/BPFK-JKT/XI/2025-782',
+                kondisi: 'Baik (Laik Operasi)',
+                daya_listrik: '320 Watt / 220 VAC',
+                tingkat_risiko: 'Tinggi (High Risk / Life Support)',
+                keterangan: 'Segera hubungi BPFK untuk perpanjangan jadwal kalibrasi tahunan.'
+            },
+            {
+                id: 3,
+                kode_alat: 'EM-IGD-001',
+                nama_alat: 'Patient Monitor 7 Parameter Touchscreen',
+                jenis_alat: 'Monitoring Pasien',
+                merek: 'Mindray',
+                tipe_model: 'BeneVision N15',
+                nomor_seri: 'SN-BV2024-1102',
+                tahun: '2024',
+                lokasi: 'IGD (Instalasi Gawat Darurat)',
+                tgl_kalibrasi_terakhir: '2026-02-15',
+                tgl_kalibrasi_berikutnya: '2027-02-15',
+                lembaga_kalibrasi: 'PT Kalibrasi Medika Presisi (KAN LK-089-IDN)',
+                no_sertifikat: 'CAL/KMP/II/2026-104',
+                kondisi: 'Baik (Laik Operasi)',
+                daya_listrik: '110 Watt / 220 VAC',
+                tingkat_risiko: 'Sedang (Medium Risk)',
+                keterangan: 'Modul SpO2, NIBP, IBP, Temp, ECG 5-lead berfungsi sangat presisi.'
+            },
+            {
+                id: 4,
+                kode_alat: 'EM-MEL-003',
+                nama_alat: 'Infusion Pump Digital Smart',
+                jenis_alat: 'Terapi & Pengobatan',
+                merek: 'B. Braun',
+                tipe_model: 'Infusomat Space',
+                nomor_seri: 'SN-BB2021-9981',
+                tahun: '2021',
+                lokasi: 'Ruang Rawat Inap Melati',
+                tgl_kalibrasi_terakhir: '2025-10-01',
+                tgl_kalibrasi_berikutnya: '2026-10-01',
+                lembaga_kalibrasi: 'BPFK Surabaya',
+                no_sertifikat: 'CAL/BPFK-SBY/X/2025-455',
+                kondisi: 'Baik (Laik Operasi)',
+                daya_listrik: '45 Watt / 220 VAC',
+                tingkat_risiko: 'Sedang (Medium Risk)',
+                keterangan: 'Masa berlaku kalibrasi telah lewat. Wajib kalibrasi ulang sebelum digunakan ke pasien.'
+            },
+            {
+                id: 5,
+                kode_alat: 'EM-NIC-001',
+                nama_alat: 'Syringe Pump Micro & Macro Precision',
+                jenis_alat: 'Terapi & Pengobatan',
+                merek: 'Terumo',
+                tipe_model: 'TE-SS700',
+                nomor_seri: 'SN-TR2023-3392',
+                tahun: '2023',
+                lokasi: 'NICU / PICU',
+                tgl_kalibrasi_terakhir: '2026-01-10',
+                tgl_kalibrasi_berikutnya: '2027-01-10',
+                lembaga_kalibrasi: 'BPFK Surabaya',
+                no_sertifikat: 'CAL/BPFK-SBY/I/2026-018',
+                kondisi: 'Baik (Laik Operasi)',
+                daya_listrik: '35 Watt / 220 VAC',
+                tingkat_risiko: 'Sedang (Medium Risk)',
+                keterangan: 'Kalibrasi laju alir (flow rate) dan oklusi lulus uji standar Permenkes 54/2015.'
+            },
+            {
+                id: 6,
+                kode_alat: 'EM-POL-002',
+                nama_alat: 'Electrocardiograph (ECG/EKG 12 Channel)',
+                jenis_alat: 'Diagnostik & Pencitraan',
+                merek: 'Philips Healthcare',
+                tipe_model: 'PageWriter TC20',
+                nomor_seri: 'SN-PH2022-7714',
+                tahun: '2022',
+                lokasi: 'Poliklinik Jantung & Pembuluh Darah',
+                tgl_kalibrasi_terakhir: '2025-11-15',
+                tgl_kalibrasi_berikutnya: '2026-11-28',
+                lembaga_kalibrasi: 'BPFK Surabaya',
+                no_sertifikat: 'CAL/BPFK-SBY/XI/2025-331',
+                kondisi: 'Baik (Laik Operasi)',
+                daya_listrik: '80 Watt / 220 VAC',
+                tingkat_risiko: 'Sedang (Medium Risk)',
+                keterangan: 'Uji sensitivitas amplitudo dan kertas printer berjalan normal.'
+            },
+            {
+                id: 7,
+                kode_alat: 'EM-OK-001',
+                nama_alat: 'Electrosurgical Unit (ESU / Couter Bedah)',
+                jenis_alat: 'Terapi & Bedah',
+                merek: 'Medtronic Covidien',
+                tipe_model: 'ForceTriad Energy Platform',
+                nomor_seri: 'SN-MD2021-6542',
+                tahun: '2021',
+                lokasi: 'Kamar Bedah Sentral (OK 1)',
+                tgl_kalibrasi_terakhir: '2026-03-01',
+                tgl_kalibrasi_berikutnya: '2027-03-01',
+                lembaga_kalibrasi: 'BPFK Surabaya',
+                no_sertifikat: 'CAL/BPFK-SBY/III/2026-088',
+                kondisi: 'Baik (Laik Operasi)',
+                daya_listrik: '850 Watt / 220 VAC',
+                tingkat_risiko: 'Tinggi (High Risk / Life Support)',
+                keterangan: 'Output monopolar, bipolar, dan LigaSure terkalibrasi presisi.'
+            },
+            {
+                id: 8,
+                kode_alat: 'EM-RAD-001',
+                nama_alat: 'Mobile Digital X-Ray System',
+                jenis_alat: 'Diagnostik & Pencitraan',
+                merek: 'Shimadzu',
+                tipe_model: 'MobileDaRt Evolution MX8',
+                nomor_seri: 'SN-SH2020-0089',
+                tahun: '2020',
+                lokasi: 'Instalasi Radiologi',
+                tgl_kalibrasi_terakhir: '2025-09-12',
+                tgl_kalibrasi_berikutnya: '2026-09-12',
+                lembaga_kalibrasi: 'BPFK Jakarta & BAPETEN',
+                no_sertifikat: 'CAL/BAPETEN-BPFK/IX/2025-119',
+                kondisi: 'Rusak Ringan (Perlu Maintenance)',
+                daya_listrik: '3200 Watt / 220 VAC 16A',
+                tingkat_risiko: 'Tinggi (High Risk / Radiasi)',
+                keterangan: 'Perlu kalibrasi dosis radiasi paparan tabung X-Ray dan collimator alignment.'
+            }
+        ];
+
+        // Initial Realistic Seed Dataset
+        const defaultUsers = [
+            { id: 1, username: 'admin', nama_lengkap: 'Raden Pratama, S.Tr.TEM', email: 'admin.iprs@rumahsakit.co.id', role: 'Admin IPSRS / Elektromedis', created_at: '2026-11-10 08:30:00' },
+            { id: 2, username: 'teknisi', nama_lengkap: 'Siti Khadijah, A.Md.TEM', email: 'teknisi.medis@rumahsakit.co.id', role: 'Teknisi Elektromedis', created_at: '2026-11-12 09:15:00' },
+            { id: 3, username: 'perawat', nama_lengkap: 'Ns. Hendra Wijaya, S.Kep', email: 'hendra.icu@rumahsakit.co.id', role: 'Kepala Ruangan ICU', created_at: '2026-11-15 14:20:00' }
+        ];
+
+        const defaultLogs = [
+            { id: 1, username: 'admin', nama_pengguna: 'Raden Pratama, S.Tr.TEM', tipe_aktivitas: 'LOGIN', deskripsi: 'Pengguna admin berhasil masuk ke dashboard sistem.', ip_address: '127.0.0.1', created_at: '2026-11-17 10:15:00' },
+            { id: 2, username: 'admin', nama_pengguna: 'Raden Pratama, S.Tr.TEM', tipe_aktivitas: 'UPDATE_ALAT', deskripsi: 'Memperbarui data dan jadwal kalibrasi alat Defibrillator Biphasic (EM-ICU-001).', ip_address: '127.0.0.1', created_at: '2026-11-17 10:20:00' },
+            { id: 3, username: 'teknisi', nama_pengguna: 'Siti Khadijah, A.Md.TEM', tipe_aktivitas: 'TAMBAH_ALAT', deskripsi: 'Menambahkan instrumen baru Patient Monitor 7-Para (EM-IGD-001) di IGD.', ip_address: '127.0.0.1', created_at: '2026-11-17 10:30:00' },
+            { id: 4, username: 'perawat', nama_pengguna: 'Ns. Hendra Wijaya, S.Kep', tipe_aktivitas: 'REGISTRASI', deskripsi: 'Pengguna baru berhasil registrasi akun dengan peran Kepala Ruangan ICU.', ip_address: '127.0.0.1', created_at: '2026-11-17 10:45:00' }
+        ];
+
+        // State Store
+        let state = {
+            currentUser: JSON.parse(localStorage.getItem('meditronik_user') || 'null'),
+            alat: JSON.parse(localStorage.getItem('meditronik_alat') || JSON.stringify(defaultAlat)),
+            users: JSON.parse(localStorage.getItem('meditronik_users') || JSON.stringify(defaultUsers)),
+            logs: JSON.parse(localStorage.getItem('meditronik_logs') || JSON.stringify(defaultLogs))
+        };
+
+        function saveStorage() {
+            localStorage.setItem('meditronik_alat', JSON.stringify(state.alat));
+            localStorage.setItem('meditronik_users', JSON.stringify(state.users));
+            localStorage.setItem('meditronik_logs', JSON.stringify(state.logs));
+            if (state.currentUser) {
+                localStorage.setItem('meditronik_user', JSON.stringify(state.currentUser));
+            } else {
+                localStorage.removeItem('meditronik_user');
+            }
+        }
+
+        function addLog(tipe, deskripsi) {
+            const user = state.currentUser || { username: 'sistem', nama_lengkap: 'Sistem' };
+            const newLog = {
+                id: Date.now(),
+                username: user.username,
+                nama_pengguna: user.nama_lengkap,
+                tipe_aktivitas: tipe,
+                deskripsi: deskripsi,
+                ip_address: '127.0.0.1',
+                created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
+            };
+            state.logs.unshift(newLog);
+            saveStorage();
+            renderLiveFeed();
+        }
+
+        // Calibration Badge Calculation
+        function calculateBadge(dateStr) {
+            if (!dateStr) return { status: 'Belum Terjadwal', badge: 'bg-gray-100 text-gray-700', text: 'Tidak ada data' };
+            const today = new Date();
+            const target = new Date(dateStr);
+            const diffTime = target - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) {
+                return {
+                    status: 'Kadaluarsa (Expired)',
+                    badge: 'bg-red-50 text-red-700 border border-red-200',
+                    text: `Terlambat ${Math.abs(diffDays)} hari`,
+                    type: 'expired'
+                };
+            } else if (diffDays <= 30) {
+                return {
+                    status: 'Mendekati Jatuh Tempo',
+                    badge: 'bg-amber-50 text-amber-800 border border-amber-300',
+                    text: `Sisa ${diffDays} hari lagi`,
+                    type: 'mendekati'
+                };
+            } else {
+                return {
+                    status: 'Terkalibrasi (Laik)',
+                    badge: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+                    text: `Aktif (${diffDays} hari)`,
+                    type: 'laik'
+                };
+            }
+        }
+
+        // Auth Logic
+        function switchAuthTab(tab) {
+            if (tab === 'login') {
+                document.getElementById('authLoginForm').classList.remove('hidden');
+                document.getElementById('authRegisterForm').classList.add('hidden');
+                document.getElementById('authTabLoginBtn').className = 'flex-1 pb-3 text-sm font-semibold text-center border-b-2 border-medical-600 text-medical-700 transition-all flex items-center justify-center gap-2';
+                document.getElementById('authTabRegBtn').className = 'flex-1 pb-3 text-sm font-semibold text-center border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all flex items-center justify-center gap-2';
+            } else {
+                document.getElementById('authLoginForm').classList.add('hidden');
+                document.getElementById('authRegisterForm').classList.remove('hidden');
+                document.getElementById('authTabRegBtn').className = 'flex-1 pb-3 text-sm font-semibold text-center border-b-2 border-medical-600 text-medical-700 transition-all flex items-center justify-center gap-2';
+                document.getElementById('authTabLoginBtn').className = 'flex-1 pb-3 text-sm font-semibold text-center border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all flex items-center justify-center gap-2';
+            }
+        }
+
+        function quickLogin(role) {
+            if (role === 'admin') {
+                state.currentUser = {
+                    username: 'admin',
+                    nama_lengkap: 'Raden Pratama, S.Tr.TEM',
+                    role: 'Admin IPSRS / Elektromedis'
+                };
+            } else {
+                state.currentUser = {
+                    username: 'teknisi',
+                    nama_lengkap: 'Siti Khadijah, A.Md.TEM',
+                    role: 'Teknisi Elektromedis'
+                };
+            }
+            saveStorage();
+            addLog('LOGIN', `Pengguna '${state.currentUser.username}' (${state.currentUser.nama_lengkap}) berhasil masuk ke sistem.`);
+            updateAppView();
+        }
+
+        function handleLogin() {
+            const user = document.getElementById('loginUsernameInput').value.trim() || 'admin';
+            state.currentUser = {
+                username: user,
+                nama_lengkap: user === 'admin' ? 'Raden Pratama, S.Tr.TEM' : user,
+                role: 'Admin IPSRS / Elektromedis'
+            };
+            saveStorage();
+            addLog('LOGIN', `Pengguna '${state.currentUser.username}' (${state.currentUser.nama_lengkap}) berhasil masuk ke sistem.`);
+            updateAppView();
+        }
+
+        function handleRegister() {
+            const nama = document.getElementById('regNama').value.trim();
+            const user = document.getElementById('regUser').value.trim();
+            const email = document.getElementById('regEmail').value.trim() || `${user}@rumahsakit.co.id`;
+            const role = document.getElementById('regRole').value;
+            if (!nama || !user) {
+                alert('Silakan isi nama dan username.');
+                return;
+            }
+            state.currentUser = { username: user, nama_lengkap: nama, role: role };
+            state.users.unshift({
+                id: Date.now(),
+                username: user,
+                nama_lengkap: nama,
+                email: email,
+                role: role,
+                created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
+            });
+            saveStorage();
+            addLog('REGISTRASI', `Pengguna baru '${user}' (${nama}) berhasil mendaftar akun sebagai ${role}.`);
+            alert('Akun berhasil dibuat! Selamat datang di SIM-Elektromedis.');
+            updateAppView();
+        }
+
+        function handleLogout() {
+            if (confirm('Apakah Anda yakin ingin keluar dari sistem?')) {
+                if (state.currentUser) {
+                    addLog('LOGOUT', `Pengguna '${state.currentUser.username}' keluar dari sistem.`);
+                }
+                state.currentUser = null;
+                saveStorage();
+                updateAppView();
+            }
+        }
+
+        function togglePassword(id, btn) {
+            const input = document.getElementById(id);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = '<i class="fa-regular fa-eye-slash"></i>';
+            } else {
+                input.type = 'password';
+                btn.innerHTML = '<i class="fa-regular fa-eye"></i>';
+            }
+        }
+
+        // View Management
+        let catChartInstance = null;
+        let statChartInstance = null;
+
+        function updateAppView() {
+            const authScreen = document.getElementById('authScreen');
+            const mainDashboard = document.getElementById('mainDashboard');
+
+            if (!state.currentUser) {
+                authScreen.classList.remove('hidden');
+                mainDashboard.classList.add('hidden');
+                mainDashboard.classList.remove('flex');
+            } else {
+                authScreen.classList.add('hidden');
+                mainDashboard.classList.remove('hidden');
+                mainDashboard.classList.add('flex');
+
+                document.getElementById('navUserNama').textContent = state.currentUser.nama_lengkap;
+                document.getElementById('navUserRole').textContent = state.currentUser.role;
+                document.getElementById('navUserAvatar').textContent = state.currentUser.username.substring(0, 2).toUpperCase();
+
+                populateFilterDropdowns();
+                renderTable();
+                updateChartsAndMetrics();
+            }
+        }
+
+        function populateFilterDropdowns() {
+            const filterLokasi = document.getElementById('filterLokasi');
+            const filterJenis = document.getElementById('filterJenis');
+
+            const currentLokasi = filterLokasi.value;
+            const currentJenis = filterJenis.value;
+
+            const lokSet = new Set();
+            const jenSet = new Set();
+
+            state.alat.forEach(a => {
+                if (a.lokasi) lokSet.add(a.lokasi);
+                if (a.jenis_alat) jenSet.add(a.jenis_alat);
+            });
+
+            filterLokasi.innerHTML = '<option value="">Semua Lokasi Ruangan</option>' + 
+                Array.from(lokSet).sort().map(l => `<option value="${l}" ${l === currentLokasi ? 'selected' : ''}>${l}</option>`).join('');
+
+            filterJenis.innerHTML = '<option value="">Semua Kategori Alat</option>' + 
+                Array.from(jenSet).sort().map(j => `<option value="${j}" ${j === currentJenis ? 'selected' : ''}>${j}</option>`).join('');
+        }
+
+        function renderTable() {
+            const search = document.getElementById('filterSearch').value.toLowerCase();
+            const lokasi = document.getElementById('filterLokasi').value;
+            const jenis = document.getElementById('filterJenis').value;
+            const status = document.getElementById('filterStatus').value;
+
+            const filtered = state.alat.filter(item => {
+                const badge = calculateBadge(item.tgl_kalibrasi_berikutnya);
+                
+                if (lokasi && item.lokasi !== lokasi) return false;
+                if (jenis && item.jenis_alat !== jenis) return false;
+                if (status && badge.type !== status) return false;
+
+                if (search) {
+                    const match = (item.nama_alat + ' ' + item.merek + ' ' + item.tipe_model + ' ' + item.nomor_seri + ' ' + item.kode_alat + ' ' + item.lokasi).toLowerCase();
+                    if (!match.includes(search)) return false;
+                }
+                return true;
+            });
+
+            const tbody = document.getElementById('tableBody');
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="py-10 text-center text-slate-400">Tidak ada data alat yang sesuai filter.</td></tr>`;
+            } else {
+                tbody.innerHTML = filtered.map((item, idx) => {
+                    const b = calculateBadge(item.tgl_kalibrasi_berikutnya);
+                    const isHigh = item.tingkat_risiko && item.tingkat_risiko.includes('Tinggi');
+                    return `
+                    <tr class="hover:bg-blue-50/40 transition-colors">
+                        <td class="py-4 px-4 text-center font-bold text-slate-400">${idx + 1}</td>
+                        <td class="py-4 px-4">
+                            <div class="font-bold text-slate-900 text-sm leading-snug">${item.nama_alat}</div>
+                            <div class="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500 mt-1">
+                                <span class="font-semibold text-medical-800">${item.merek}</span>
+                                <span>•</span>
+                                <span>${item.tipe_model || '-'}</span>
+                                <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-mono text-[10px]">SN: ${item.nomor_seri || '-'}</span>
+                            </div>
+                            <div class="text-[10px] text-slate-400 font-mono mt-0.5">Kode: ${item.kode_alat || 'EM-' + item.id}</div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="font-semibold text-slate-700">${item.jenis_alat}</div>
+                            <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold mt-1 ${isHigh ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-slate-100 text-slate-700'}">${item.tingkat_risiko || 'Sedang'}</span>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="font-semibold text-slate-800 flex items-center gap-1.5">
+                                <i class="fa-solid fa-door-open text-medical-600 text-xs"></i>
+                                <span>${item.lokasi}</span>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="font-bold text-slate-700">Thn: ${item.tahun || '-'}</div>
+                            <div class="text-[11px] mt-0.5 ${item.kondisi && item.kondisi.includes('Rusak') ? 'text-red-600 font-bold' : 'text-slate-500'}">${item.kondisi || 'Baik'}</div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="text-[11px] text-slate-500">Terakhir: <strong>${item.tgl_kalibrasi_terakhir || '-'}</strong></div>
+                            <div class="text-xs font-bold text-slate-800 mt-0.5">Tempo: ${item.tgl_kalibrasi_berikutnya || '-'}</div>
+                            <div class="mt-1"><span class="px-2 py-0.5 rounded text-[10px] font-semibold ${b.badge}">${b.text}</span></div>
+                        </td>
+                        <td class="py-4 px-4 text-center">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border ${b.badge}">
+                                <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+                                ${b.status}
+                            </span>
+                        </td>
+                        <td class="py-4 px-4 text-center">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <button onclick="viewDetail(${item.id})" class="w-8 h-8 rounded-lg bg-blue-50 hover:bg-medical-600 hover:text-white text-medical-700 flex items-center justify-center" title="Detail"><i class="fa-solid fa-eye text-xs"></i></button>
+                                <button onclick="previewSticker(${item.id})" class="w-8 h-8 rounded-lg bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 flex items-center justify-center" title="Stiker"><i class="fa-solid fa-tag text-xs"></i></button>
+                                <button onclick="openModalEdit(${item.id})" class="w-8 h-8 rounded-lg bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-700 flex items-center justify-center" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
+                                <button onclick="deleteAlat(${item.id})" class="w-8 h-8 rounded-lg bg-red-50 hover:bg-red-600 hover:text-white text-red-700 flex items-center justify-center" title="Hapus"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('countShown').textContent = filtered.length;
+            document.getElementById('countTotal').textContent = state.alat.length;
+        }
+
+        function resetFilters() {
+            document.getElementById('filterSearch').value = '';
+            document.getElementById('filterLokasi').value = '';
+            document.getElementById('filterJenis').value = '';
+            document.getElementById('filterStatus').value = '';
+            renderTable();
+        }
+
+        function updateChartsAndMetrics() {
+            let laik = 0, mendekati = 0, kadaluarsa = 0, rusak = 0;
+            const catMap = {};
+
+            state.alat.forEach(a => {
+                const b = calculateBadge(a.tgl_kalibrasi_berikutnya);
+                if (b.type === 'laik') laik++;
+                else if (b.type === 'mendekati') mendekati++;
+                else kadaluarsa++;
+
+                if (a.kondisi && a.kondisi.includes('Rusak')) rusak++;
+
+                const c = a.jenis_alat || 'Lainnya';
+                catMap[c] = (catMap[c] || 0) + 1;
+            });
+
+            document.getElementById('statTotal').textContent = state.alat.length;
+            document.getElementById('statLaik').textContent = laik;
+            document.getElementById('statMendekati').textContent = mendekati;
+            document.getElementById('statKadaluarsa').textContent = kadaluarsa;
+            document.getElementById('statRusak').textContent = rusak;
+
+            document.getElementById('legendLaik').textContent = laik + ' unit';
+            document.getElementById('legendMendekati').textContent = mendekati + ' unit';
+            document.getElementById('legendKadaluarsa').textContent = kadaluarsa + ' unit';
+
+            // Chart Kategori
+            const ctxCat = document.getElementById('appCategoryChart').getContext('2d');
+            if (catChartInstance) catChartInstance.destroy();
+            catChartInstance = new Chart(ctxCat, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(catMap),
+                    datasets: [{
+                        data: Object.values(catMap),
+                        backgroundColor: ['#0284c7', '#2563eb', '#6366f1', '#10b981', '#f59e0b', '#ef4444', '#6b7280'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#64748b' } },
+                        x: { ticks: { font: { size: 10 }, color: '#64748b' }, grid: { display: false } }
+                    }
+                }
+            });
+
+            // Chart Status
+            const ctxStat = document.getElementById('appStatusChart').getContext('2d');
+            if (statChartInstance) statChartInstance.destroy();
+            statChartInstance = new Chart(ctxStat, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Laik Pakai', 'Mendekati Jatuh Tempo', 'Kadaluarsa'],
+                    datasets: [{
+                        data: [laik, mendekati, kadaluarsa],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        // CRUD Modal Functions
+        function openModalAdd() {
+            document.getElementById('modalFormTitle').textContent = 'Tambah Data Alat Elektromedis';
+            document.getElementById('formAlatId').value = '';
+            document.getElementById('formAlat').reset();
+            document.getElementById('inputTahun').value = new Date().getFullYear();
+            document.getElementById('modalFormAlat').classList.remove('hidden');
+            document.getElementById('modalFormAlat').classList.add('flex');
+        }
+
+        function openModalEdit(id) {
+            const item = state.alat.find(a => a.id === id);
+            if (!item) return;
+
+            document.getElementById('modalFormTitle').textContent = 'Edit Data Alat Elektromedis';
+            document.getElementById('formAlatId').value = item.id;
+            document.getElementById('inputNamaAlat').value = item.nama_alat;
+            document.getElementById('inputJenisAlat').value = item.jenis_alat;
+            document.getElementById('inputMerek').value = item.merek;
+            document.getElementById('inputTipe').value = item.tipe_model || '';
+            document.getElementById('inputSN').value = item.nomor_seri || '';
+            document.getElementById('inputKode').value = item.kode_alat || '';
+            document.getElementById('inputTahun').value = item.tahun || '';
+            document.getElementById('inputDaya').value = item.daya_listrik || '';
+            document.getElementById('inputLokasi').value = item.lokasi || '';
+            document.getElementById('inputKondisi').value = item.kondisi || 'Baik (Laik Operasi)';
+            document.getElementById('inputRisiko').value = item.tingkat_risiko || 'Sedang (Medium Risk)';
+            document.getElementById('inputTglTerakhir').value = item.tgl_kalibrasi_terakhir || '';
+            document.getElementById('inputTglBerikutnya').value = item.tgl_kalibrasi_berikutnya || '';
+            document.getElementById('inputLembaga').value = item.lembaga_kalibrasi || 'BPFK';
+            document.getElementById('inputNoSertif').value = item.no_sertifikat || '';
+            document.getElementById('inputKeterangan').value = item.keterangan || '';
+
+            document.getElementById('modalFormAlat').classList.remove('hidden');
+            document.getElementById('modalFormAlat').classList.add('flex');
+        }
+
+        function closeModalForm() {
+            document.getElementById('modalFormAlat').classList.add('hidden');
+            document.getElementById('modalFormAlat').classList.remove('flex');
+        }
+
+        function calcNextDueDate() {
+            const last = document.getElementById('inputTglTerakhir').value;
+            if (last) {
+                const d = new Date(last);
+                d.setFullYear(d.getFullYear() + 1);
+                document.getElementById('inputTglBerikutnya').value = d.toISOString().split('T')[0];
+            }
+        }
+
+        function handleSaveAlat(e) {
+            e.preventDefault();
+            const idVal = document.getElementById('formAlatId').value;
+            const nama = document.getElementById('inputNamaAlat').value.trim();
+            const merek = document.getElementById('inputMerek').value.trim();
+            const lokasi = document.getElementById('inputLokasi').value;
+
+            let kode = document.getElementById('inputKode').value.trim();
+            if (!kode) {
+                const prefix = lokasi.replace(/[^A-Za-z]/g, '').substring(0, 3).toUpperCase() || 'MED';
+                kode = 'EM-' + prefix + '-' + Math.floor(100 + Math.random() * 900);
+            }
+
+            const itemData = {
+                nama_alat: nama,
+                jenis_alat: document.getElementById('inputJenisAlat').value,
+                merek: merek,
+                tipe_model: document.getElementById('inputTipe').value.trim(),
+                nomor_seri: document.getElementById('inputSN').value.trim(),
+                kode_alat: kode,
+                tahun: document.getElementById('inputTahun').value.trim(),
+                daya_listrik: document.getElementById('inputDaya').value.trim(),
+                lokasi: lokasi,
+                kondisi: document.getElementById('inputKondisi').value,
+                tingkat_risiko: document.getElementById('inputRisiko').value,
+                tgl_kalibrasi_terakhir: document.getElementById('inputTglTerakhir').value,
+                tgl_kalibrasi_berikutnya: document.getElementById('inputTglBerikutnya').value,
+                lembaga_kalibrasi: document.getElementById('inputLembaga').value.trim(),
+                no_sertifikat: document.getElementById('inputNoSertif').value.trim(),
+                keterangan: document.getElementById('inputKeterangan').value.trim()
+            };
+
+            if (idVal) {
+                // Update
+                const idx = state.alat.findIndex(a => a.id == idVal);
+                if (idx !== -1) {
+                    state.alat[idx] = { ...state.alat[idx], ...itemData };
+                }
+                addLog('UPDATE_ALAT', `Memperbarui data alat: '${itemData.nama_alat}' (${itemData.kode_alat}). Jadwal kalibrasi: ${itemData.tgl_kalibrasi_berikutnya || '-'}.`);
+            } else {
+                // Add new
+                const newId = state.alat.length > 0 ? Math.max(...state.alat.map(a => a.id)) + 1 : 1;
+                state.alat.unshift({ id: newId, ...itemData });
+                addLog('TAMBAH_ALAT', `Menambahkan alat baru: '${itemData.nama_alat}' (${itemData.kode_alat}) di ruangan ${itemData.lokasi}.`);
+            }
+
+            saveStorage();
+            closeModalForm();
+            populateFilterDropdowns();
+            renderTable();
+            updateChartsAndMetrics();
+        }
+
+        function deleteAlat(id) {
+            const item = state.alat.find(a => a.id === id);
+            if (!item) return;
+            if (confirm(`Yakin ingin menghapus data alat: ${item.nama_alat}?`)) {
+                state.alat = state.alat.filter(a => a.id !== id);
+                addLog('HAPUS_ALAT', `Menghapus data alat: '${item.nama_alat}' (ID: #${id}).`);
+                saveStorage();
+                populateFilterDropdowns();
+                renderTable();
+                updateChartsAndMetrics();
+            }
+        }
+
+        // View Detail
+        function viewDetail(id) {
+            const item = state.alat.find(a => a.id === id);
+            if (!item) return;
+
+            const b = calculateBadge(item.tgl_kalibrasi_berikutnya);
+
+            document.getElementById('detailNamaAlat').textContent = item.nama_alat;
+            document.getElementById('detailKodeAlat').textContent = item.kode_alat || 'EM-' + item.id;
+            document.getElementById('detailMerekModel').textContent = item.merek + ' ' + (item.tipe_model || '');
+            document.getElementById('detailSN').textContent = item.nomor_seri || '-';
+            document.getElementById('detailLokasi').textContent = item.lokasi;
+            document.getElementById('detailTahunDaya').textContent = (item.tahun || '-') + ' / ' + (item.daya_listrik || '-');
+            document.getElementById('detailTglTerakhir').textContent = item.tgl_kalibrasi_terakhir || '-';
+            document.getElementById('detailTglBerikutnya').textContent = item.tgl_kalibrasi_berikutnya || '-';
+            document.getElementById('detailStatusBadge').textContent = b.status;
+            document.getElementById('detailStatusBadge').className = 'px-2 py-0.5 rounded text-[10px] font-bold ' + b.badge;
+            document.getElementById('detailLembaga').textContent = item.lembaga_kalibrasi || 'BPFK';
+            document.getElementById('detailNoSertif').textContent = item.no_sertifikat || '-';
+            document.getElementById('detailKeterangan').textContent = item.keterangan || 'Tidak ada catatan pemeliharaan.';
+
+            document.getElementById('detailPrintStickerBtn').onclick = () => {
+                closeModalDetail();
+                previewSticker(item.id);
+            };
+
+            document.getElementById('modalDetailAlat').classList.remove('hidden');
+            document.getElementById('modalDetailAlat').classList.add('flex');
+        }
+
+        function closeModalDetail() {
+            document.getElementById('modalDetailAlat').classList.add('hidden');
+            document.getElementById('modalDetailAlat').classList.remove('flex');
+        }
+
+        // Sticker Modal
+        function previewSticker(id) {
+            const item = state.alat.find(a => a.id === id);
+            if (!item) return;
+
+            document.getElementById('stkNama').textContent = item.nama_alat;
+            document.getElementById('stkMerek').textContent = item.merek + ' ' + (item.tipe_model || '');
+            document.getElementById('stkKode').textContent = item.kode_alat || 'EM-' + item.id;
+            document.getElementById('stkSN').textContent = item.nomor_seri || '-';
+            document.getElementById('stkTglTerakhir').textContent = item.tgl_kalibrasi_terakhir || '-';
+            document.getElementById('stkTglBerikutnya').textContent = item.tgl_kalibrasi_berikutnya || '-';
+            document.getElementById('stkLembaga').textContent = item.lembaga_kalibrasi || 'BPFK';
+
+            document.getElementById('modalSticker').classList.remove('hidden');
+            document.getElementById('modalSticker').classList.add('flex');
+        }
+
+        function closeModalSticker() {
+            document.getElementById('modalSticker').classList.add('hidden');
+            document.getElementById('modalSticker').classList.remove('flex');
+        }
+
+        // Export to CSV
+        function exportCSV() {
+            let csv = "\uFEFFKode Alat,Nama Alat,Jenis Alat,Merek,Model,Nomor Seri,Tahun,Lokasi,Tgl Kalibrasi Terakhir,Jatuh Tempo,Status Kalibrasi,Lembaga Kalibrasi,No Sertifikat\n";
+            state.alat.forEach(a => {
+                const b = calculateBadge(a.tgl_kalibrasi_berikutnya);
+                csv += `"${a.kode_alat || ''}","${a.nama_alat}","${a.jenis_alat}","${a.merek}","${a.tipe_model || ''}","${a.nomor_seri || ''}","${a.tahun || ''}","${a.lokasi}","${a.tgl_kalibrasi_terakhir || ''}","${a.tgl_kalibrasi_berikutnya || ''}","${b.status}","${a.lembaga_kalibrasi || ''}","${a.no_sertifikat || ''}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", `Rekap_Elektromedis_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function printSummaryReport() {
+            window.print();
+        }
+
+        function scrollToInventory() {
+            window.scrollTo({ top: 600, behavior: 'smooth' });
+        }
+
+        // Live Audit Feed & Log Modals
+        function renderLiveFeed() {
+            const container = document.getElementById('liveFeedContainer');
+            if (!container) return;
+
+            const recent = state.logs.slice(0, 6);
+            if (recent.length === 0) {
+                container.innerHTML = `<div class="col-span-3 text-center text-slate-400 py-4">Belum ada aktivitas tercatat.</div>`;
+            } else {
+                container.innerHTML = recent.map(l => {
+                    let color = 'bg-blue-50 text-blue-700 border-blue-200';
+                    let icon = 'fa-circle-info';
+                    if (l.tipe_aktivitas === 'LOGIN') { color = 'bg-emerald-50 text-emerald-700 border-emerald-200'; icon = 'fa-right-to-bracket'; }
+                    else if (l.tipe_aktivitas === 'REGISTRASI') { color = 'bg-cyan-50 text-cyan-700 border-cyan-200'; icon = 'fa-user-plus'; }
+                    else if (l.tipe_aktivitas === 'UPDATE_ALAT') { color = 'bg-amber-50 text-amber-800 border-amber-200'; icon = 'fa-pen-to-square'; }
+                    else if (l.tipe_aktivitas === 'TAMBAH_ALAT') { color = 'bg-indigo-50 text-indigo-700 border-indigo-200'; icon = 'fa-plus-circle'; }
+                    else if (l.tipe_aktivitas === 'HAPUS_ALAT') { color = 'bg-red-50 text-red-700 border-red-200'; icon = 'fa-trash-can'; }
+
+                    return `
+                    <div class="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-200/80 hover:bg-white hover:shadow-sm transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${color}">
+                                    <i class="fa-solid ${icon} text-[9px]"></i>
+                                    <span>${l.tipe_aktivitas}</span>
+                                </span>
+                                <span class="text-[10px] font-mono text-slate-400">${l.created_at.substring(0, 16)}</span>
+                            </div>
+                            <p class="text-xs text-slate-800 font-semibold line-clamp-2">${l.deskripsi}</p>
+                        </div>
+                        <div class="mt-2.5 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-500">
+                            <span class="flex items-center gap-1 font-medium text-slate-700">
+                                <i class="fa-regular fa-user text-[10px] text-slate-400"></i>
+                                <span>${l.nama_pengguna || l.username}</span>
+                            </span>
+                            <span class="font-mono text-[10px] text-slate-400">${l.ip_address || '127.0.0.1'}</span>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            }
+
+            const badgeLog = document.getElementById('appLogCountBadge');
+            if (badgeLog) badgeLog.textContent = state.logs.length;
+
+            const badgeUser = document.getElementById('appUserCountBadge');
+            if (badgeUser) badgeUser.textContent = state.users.length;
+        }
+
+        function openModalLogs() {
+            const tbody = document.getElementById('logsTableBody');
+            tbody.innerHTML = state.logs.map(l => {
+                let color = 'bg-blue-50 text-blue-700 border-blue-200';
+                if (l.tipe_aktivitas === 'LOGIN') color = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                else if (l.tipe_aktivitas === 'REGISTRASI') color = 'bg-cyan-50 text-cyan-700 border-cyan-200';
+                else if (l.tipe_aktivitas === 'UPDATE_ALAT') color = 'bg-amber-50 text-amber-800 border-amber-200';
+                else if (l.tipe_aktivitas === 'TAMBAH_ALAT') color = 'bg-indigo-50 text-indigo-700 border-indigo-200';
+                else if (l.tipe_aktivitas === 'HAPUS_ALAT') color = 'bg-red-50 text-red-700 border-red-200';
+
+                return `
+                <tr class="hover:bg-slate-50">
+                    <td class="py-2.5 px-3 font-mono text-[11px] text-slate-600">${l.created_at}</td>
+                    <td class="py-2.5 px-3">
+                        <div class="font-bold text-slate-800">${l.nama_pengguna || l.username}</div>
+                        <div class="text-[10px] text-medical-700 font-mono">@${l.username}</div>
+                    </td>
+                    <td class="py-2.5 px-3 text-center">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${color}">${l.tipe_aktivitas}</span>
+                    </td>
+                    <td class="py-2.5 px-3 text-slate-700 font-medium">${l.deskripsi}</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-[11px] text-slate-500">${l.ip_address || '127.0.0.1'}</td>
+                </tr>
+                `;
+            }).join('');
+
+            document.getElementById('modalLogs').classList.remove('hidden');
+            document.getElementById('modalLogs').classList.add('flex');
+        }
+
+        function closeModalLogs() {
+            document.getElementById('modalLogs').classList.add('hidden');
+            document.getElementById('modalLogs').classList.remove('flex');
+        }
+
+        function openModalUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = state.users.map(u => {
+                return `
+                <tr class="hover:bg-slate-50">
+                    <td class="py-2.5 px-3">
+                        <div class="font-bold text-slate-900">${u.nama_lengkap}</div>
+                        <div class="text-[10px] text-slate-400">ID: #${u.id}</div>
+                    </td>
+                    <td class="py-2.5 px-3">
+                        <div class="font-mono font-semibold text-medical-800">@${u.username}</div>
+                        <div class="text-[11px] text-slate-500">${u.email}</div>
+                    </td>
+                    <td class="py-2.5 px-3">
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-medical-800 border border-medical-200">${u.role}</span>
+                    </td>
+                    <td class="py-2.5 px-3 text-center">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Aktif
+                        </span>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+
+            document.getElementById('modalUsers').classList.remove('hidden');
+            document.getElementById('modalUsers').classList.add('flex');
+        }
+
+        function closeModalUsers() {
+            document.getElementById('modalUsers').classList.add('hidden');
+            document.getElementById('modalUsers').classList.remove('flex');
+        }
+
+        // Initialize on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            updateAppView();
+            renderLiveFeed();
+        });
+    </script>
+</body>
+</html>
